@@ -1,0 +1,90 @@
+
+C:/EMBEDDED/LAB1/PART1/getting_started.axf:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <__cs3_interrupt_vector>:
+ ********************************************************************************/
+.text        /* executable code follows */
+.global     _start 
+_start:                         
+
+        MOV     R0, #31         // used to rotate a bit pattern: 31 positions to the
+   0:	e3a0001f 	mov	r0, #31
+                                // right is equivalent to 1 position to the left
+        LDR     R1, =LED_BASE   // base address of LED lights
+   4:	e59f105c 	ldr	r1, [pc, #92]	; 68 <LED_bits+0x4>
+        LDR     R2, =SW_BASE    // base address of SW switches
+   8:	e59f205c 	ldr	r2, [pc, #92]	; 6c <LED_bits+0x8>
+        LDR     R3, =KEY_BASE   // base address of KEY pushbuttons
+   c:	e59f305c 	ldr	r3, [pc, #92]	; 70 <LED_bits+0xc>
+        LDR     R4, LED_bits    
+  10:	e59f404c 	ldr	r4, [pc, #76]	; 64 <LED_bits>
+
+00000014 <DO_DISPLAY>:
+
+DO_DISPLAY:                     
+        LDR     R5, [R2]        // load SW switches
+  14:	e5925000 	ldr	r5, [r2]
+
+        LDR     R6, [R3]        // load pushbutton keys
+  18:	e5936000 	ldr	r6, [r3]
+        CMP     R6, #0          // check if any key is presssed
+  1c:	e3560000 	cmp	r6, #0
+        BEQ     NO_BUTTON       
+  20:	0a000009 	beq	4c <NO_BUTTON>
+
+        MOV     R4, R5          // copy SW switch values onto LED displays
+  24:	e1a04005 	mov	r4, r5
+        ROR     R5, R5, #8      // the SW values are copied into the upper three
+  28:	e1a05465 	ror	r5, r5, #8
+                                // bytes of the pattern register
+        ORR     R4, R4, R5      // needed to make pattern consistent as all 32-bits
+  2c:	e1844005 	orr	r4, r4, r5
+                                // of a register are rotated
+        ROR     R5, R5, #8      // but only the lowest 8-bits are displayed on LEDs
+  30:	e1a05465 	ror	r5, r5, #8
+        ORR     R4, R4, R5      
+  34:	e1844005 	orr	r4, r4, r5
+        ROR     R5, R5, #8      
+  38:	e1a05465 	ror	r5, r5, #8
+        ORR     R4, R4, R5      
+  3c:	e1844005 	orr	r4, r4, r5
+
+00000040 <WAIT>:
+WAIT:                           
+        LDR     R6, [R3]        // load pushbuttons
+  40:	e5936000 	ldr	r6, [r3]
+        CMP     R6, #0          
+  44:	e3560000 	cmp	r6, #0
+        BNE     WAIT            // wait for button release
+  48:	1afffffc 	bne	40 <WAIT>
+
+0000004c <NO_BUTTON>:
+
+NO_BUTTON:                      
+        STR     R4, [R1]        // store pattern to the LED displays
+  4c:	e5814000 	str	r4, [r1]
+        ROR     R4, R0          // rotate the displayed pattern to the left
+  50:	e1a04074 	ror	r4, r4, r0
+
+        LDR     R6, =50000000   // delay counter
+  54:	e59f6018 	ldr	r6, [pc, #24]	; 74 <LED_bits+0x10>
+
+00000058 <DELAY>:
+DELAY:                          
+        SUBS    R6, R6, #1      
+  58:	e2566001 	subs	r6, r6, #1
+        BNE     DELAY           
+  5c:	1afffffd 	bne	58 <DELAY>
+
+        B       DO_DISPLAY      
+  60:	eaffffeb 	b	14 <DO_DISPLAY>
+
+00000064 <LED_bits>:
+  64:	0f0f0f0f 	.word	0x0f0f0f0f
+  68:	ff200000 	.word	0xff200000
+  6c:	ff200040 	.word	0xff200040
+  70:	ff200050 	.word	0xff200050
+  74:	02faf080 	.word	0x02faf080

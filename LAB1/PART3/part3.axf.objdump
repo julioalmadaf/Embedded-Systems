@@ -1,0 +1,68 @@
+
+C:/EMBEDDED/LAB1/PART3/part3.axf:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <__cs3_interrupt_vector>:
+			.text 
+			.global _start
+_start:
+			LDR 	R4, =RESULT 		// R4 points to result location 
+   0:	e59f4060 	ldr	r4, [pc, #96]	; 68 <NUMBERS+0x1c>
+			LDR 	R0, [R4, #4] 		// R0 holds the number of elements in the list 
+   4:	e5940004 	ldr	r0, [r4, #4]
+			ADD 	R1, R4, #8 			// R1 points to the ﬁrst number 
+   8:	e2841008 	add	r1, r4, #8
+			LDR		R2,[R1]
+   c:	e5912000 	ldr	r2, [r1]
+			BL 		LARGE 
+  10:	eb000001 	bl	1c <LARGE>
+			STR 	R0, [R4]			// R0 holds the subroutine return value
+  14:	e5840000 	str	r0, [r4]
+
+00000018 <END>:
+
+END: 		B 		END
+  18:	eafffffe 	b	18 <END>
+
+0000001c <LARGE>:
+
+LARGE: 		SUBS 	R0,R0, #1			//decrement loop counter
+  1c:	e2500001 	subs	r0, r0, #1
+			BEQ		DONE
+  20:	0a000005 	beq	3c <DONE>
+			ADD		R1,R1,#4			
+  24:	e2811004 	add	r1, r1, #4
+			LDR		R3,[R1]				//get the next number
+  28:	e5913000 	ldr	r3, [r1]
+			CMP		R2,R3
+  2c:	e1520003 	cmp	r2, r3
+			BGE		LARGE
+  30:	aafffff9 	bge	1c <LARGE>
+			MOV		R2,R3				//update largest number
+  34:	e1a02003 	mov	r2, r3
+			B		LARGE
+  38:	eafffff7 	b	1c <LARGE>
+
+0000003c <DONE>:
+DONE:		MOV		R0,R2				//Move Largest number to R0
+  3c:	e1a00002 	mov	r0, r2
+			BX		LR
+  40:	e12fff1e 	bx	lr
+
+00000044 <RESULT>:
+  44:	00000000 	.word	0x00000000
+
+00000048 <N>:
+  48:	00000007 	.word	0x00000007
+
+0000004c <NUMBERS>:
+  4c:	00000004 	.word	0x00000004
+  50:	00000005 	.word	0x00000005
+  54:	00000003 	.word	0x00000003
+  58:	00000006 	.word	0x00000006
+  5c:	00000001 	.word	0x00000001
+  60:	00000008 	.word	0x00000008
+  64:	00000002 	.word	0x00000002
+  68:	00000044 	.word	0x00000044

@@ -1,0 +1,102 @@
+
+C:/EMBEDDED/LAB1/PART42/part42.axf:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <__cs3_interrupt_vector>:
+/* Program that converts a binary number to decimal */
+			.text 
+			.global 	_start 
+_start: 
+			LDR 		R4, =N 
+   0:	e59f4084 	ldr	r4, [pc, #132]	; 8c <Digits+0x8>
+			ADD 		R5, R4, #4 		// R5 points to the decimal digits storage location 
+   4:	e2845004 	add	r5, r4, #4
+			LDR 		R4, [R4] 		// R4 holds N
+   8:	e5944000 	ldr	r4, [r4]
+			MOV 		R0, R4 			// parameter for DIVIDE goes in R0 
+   c:	e1a00004 	mov	r0, r4
+			BL 			DIVIDE 
+  10:	eb000004 	bl	28 <DIVIDE>
+			STRB		R3,	[R5, #3]
+  14:	e5c53003 	strb	r3, [r5, #3]
+			STRB		R2,	[R5, #2]
+  18:	e5c52002 	strb	r2, [r5, #2]
+			STRB 		R1, [R5, #1] 	// Tens digit is in R1 	
+  1c:	e5c51001 	strb	r1, [r5, #1]
+			STRB 		R0, [R5] 		// Ones digit is in R0
+  20:	e5c50000 	strb	r0, [r5]
+
+00000024 <END>:
+END: 		B 			END
+  24:	eafffffe 	b	24 <END>
+
+00000028 <DIVIDE>:
+
+/* Subroutine to perform the integer division R0 / 10. 
+* Returns: quotient in R1, and remainder in R0 */ 
+
+DIVIDE: 	MOV 		R4, #0 
+  28:	e3a04000 	mov	r4, #0
+
+0000002c <CONT2>:
+CONT2: 		CMP 		R0, #1000 
+  2c:	e3500ffa 	cmp	r0, #1000	; 0x3e8
+			BLT 		DIV_END2 
+  30:	ba000002 	blt	40 <DIV_END2>
+			SUB 		R0, #1000 
+  34:	e2400ffa 	sub	r0, r0, #1000	; 0x3e8
+			ADD 		R4, #1 
+  38:	e2844001 	add	r4, r4, #1
+			B 			CONT2 
+  3c:	eafffffa 	b	2c <CONT2>
+
+00000040 <DIV_END2>:
+DIV_END2: 	MOV 		R3, R4 			// return quotient in R1 (remainder is in R0) 
+  40:	e1a03004 	mov	r3, r4
+			MOV			R4, #0
+  44:	e3a04000 	mov	r4, #0
+
+00000048 <CONT1>:
+CONT1:		CMP			R0, #100
+  48:	e3500064 	cmp	r0, #100	; 0x64
+			BLT			DIV_END1
+  4c:	ba000002 	blt	5c <DIV_END1>
+			SUB			R0, #100
+  50:	e2400064 	sub	r0, r0, #100	; 0x64
+			ADD			R4, #1
+  54:	e2844001 	add	r4, r4, #1
+			B			CONT1
+  58:	eafffffa 	b	48 <CONT1>
+
+0000005c <DIV_END1>:
+DIV_END1: 	MOV 		R2, R4 			// return quotient in R1 (remainder is in R0) 
+  5c:	e1a02004 	mov	r2, r4
+			MOV			R4, #0
+  60:	e3a04000 	mov	r4, #0
+
+00000064 <CONT>:
+CONT:		CMP			R0, #10
+  64:	e350000a 	cmp	r0, #10
+			BLT			DIV_END
+  68:	ba000002 	blt	78 <DIV_END>
+			SUB			R0, #10
+  6c:	e240000a 	sub	r0, r0, #10
+			ADD			R4, #1
+  70:	e2844001 	add	r4, r4, #1
+			B			CONT	
+  74:	eafffffa 	b	64 <CONT>
+
+00000078 <DIV_END>:
+DIV_END:	MOV			R1, R4			
+  78:	e1a01004 	mov	r1, r4
+			BX 			LR
+  7c:	e12fff1e 	bx	lr
+
+00000080 <N>:
+  80:	00001de6 	.word	0x00001de6
+
+00000084 <Digits>:
+	...
+  8c:	00000080 	.word	0x00000080
