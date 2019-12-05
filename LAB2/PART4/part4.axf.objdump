@@ -1,0 +1,335 @@
+
+C:/EMBEDDED/LAB2/PART4/part4.axf:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <__cs3_interrupt_vector>:
+			.text 
+			.global 	_start 
+_start: 
+			
+
+			MOV			R5, #0			//initialize registers
+   0:	e3a05000 	mov	r5, #0
+			MOV			R6, #0			
+   4:	e3a06000 	mov	r6, #0
+			MOV			R7, #0
+   8:	e3a07000 	mov	r7, #0
+			BL			ONES
+   c:	eb00001f 	bl	90 <ONES>
+			BL			ZEROES
+  10:	eb000035 	bl	ec <ZEROES>
+			BL			ALTER
+  14:	eb00004e 	bl	154 <ALTER>
+
+00000018 <DISPLAY>:
+			/* Display R5 on HEX1-0, R6 on HEX3-2 and R7 on HEX5-4 */
+DISPLAY: 	LDR 		R8, =0xFF200020 // base address of HEX3-HEX0 
+  18:	e59f81fc 	ldr	r8, [pc, #508]	; 21c <BIT_CODES+0xc>
+			MOV 		R0, R5 			// display R5 on HEX1-0 
+  1c:	e1a00005 	mov	r0, r5
+			BL 			DIVIDE 			// ones digit will be in R0; tens digit in R1 
+  20:	eb000067 	bl	1c4 <DIVIDE>
+			MOV 		R10, R1 		// save the tens digit 
+  24:	e1a0a001 	mov	r10, r1
+			BL 			SEG7_CODE 
+  28:	eb000062 	bl	1b8 <SEG7_CODE>
+			MOV 		R4, R0 			// save bit code 
+  2c:	e1a04000 	mov	r4, r0
+			MOV 		R0, R10 		// retrieve the tens digit, get bit code 
+  30:	e1a0000a 	mov	r0, r10
+			BL 			SEG7_CODE 
+  34:	eb00005f 	bl	1b8 <SEG7_CODE>
+			ORR 		R4, R4, R0, LSL #8	//COMBINATION NECESSARY FOR HEX1-0
+  38:	e1844400 	orr	r4, r4, r0, lsl #8
+			MOV 		R0, R6 			// display R6 on HEX3-2 
+  3c:	e1a00006 	mov	r0, r6
+			BL 			DIVIDE 			// ones digit will be in R0; tens digit in R1 
+  40:	eb00005f 	bl	1c4 <DIVIDE>
+			MOV 		R10, R1 		// save the tens digit 
+  44:	e1a0a001 	mov	r10, r1
+			BL 			SEG7_CODE 
+  48:	eb00005a 	bl	1b8 <SEG7_CODE>
+			MOV 		R3, R0 			// save bit code 
+  4c:	e1a03000 	mov	r3, r0
+			MOV 		R0, R10 		// retrieve the tens digit, get bit code 
+  50:	e1a0000a 	mov	r0, r10
+			BL 			SEG7_CODE 
+  54:	eb000057 	bl	1b8 <SEG7_CODE>
+			ORR 		R3, R3, R0, LSL #8	//COMBINATION NECESSARY FOR HEX3-2
+  58:	e1833400 	orr	r3, r3, r0, lsl #8
+			ORR			R4, R4, R3, LSL #16	//PUT TOGETHER EVERYTHING SO YOU CAN PRINT ON HEX3-HEX0
+  5c:	e1844803 	orr	r4, r4, r3, lsl #16
+			STR 		R4, [R8]		// display the numbers from R6 and R5
+  60:	e5884000 	str	r4, [r8]
+			LDR 		R8, =0xFF200030 // base address of HEX5-HEX4 
+  64:	e59f81b4 	ldr	r8, [pc, #436]	; 220 <BIT_CODES+0x10>
+			MOV 		R0, R7 			// display R5 on HEX1-0 
+  68:	e1a00007 	mov	r0, r7
+			BL 			DIVIDE 			// ones digit will be in R0; tens digit in R1 
+  6c:	eb000054 	bl	1c4 <DIVIDE>
+			MOV 		R10, R1 		// save the tens digit 
+  70:	e1a0a001 	mov	r10, r1
+			BL 			SEG7_CODE 
+  74:	eb00004f 	bl	1b8 <SEG7_CODE>
+			MOV 		R4, R0 			// save bit code 
+  78:	e1a04000 	mov	r4, r0
+			MOV 		R0, R10 		// retrieve the tens digit, get bit code 
+  7c:	e1a0000a 	mov	r0, r10
+			BL 			SEG7_CODE 
+  80:	eb00004c 	bl	1b8 <SEG7_CODE>
+			ORR 		R4, R4, R0, LSL #8
+  84:	e1844400 	orr	r4, r4, r0, lsl #8
+			STR 		R4, [R8]		// display the numbers from R6 and R5
+  88:	e5884000 	str	r4, [r8]
+
+0000008c <END>:
+			
+			
+END: 		B 			END		
+  8c:	eafffffe 	b	8c <END>
+
+00000090 <ONES>:
+			
+
+ONES:		LDR 		R1, TEST_NUM 	// load the data word into R1
+  90:	e59f114c 	ldr	r1, [pc, #332]	; 1e4 <TEST_NUM>
+			LDR			R3, =TEST_NUM	
+  94:	e59f3188 	ldr	r3, [pc, #392]	; 224 <BIT_CODES+0x14>
+			LDR			R0, =N
+  98:	e59f0188 	ldr	r0, [pc, #392]	; 228 <BIT_CODES+0x18>
+			MOV			R8, #0
+  9c:	e3a08000 	mov	r8, #0
+			LDR			R8,[R0]
+  a0:	e5908000 	ldr	r8, [r0]
+
+000000a4 <LOOP>:
+LOOP:		MOV 		R0, #0 			// R0 will hold the NEW result 
+  a4:	e3a00000 	mov	r0, #0
+			CMP			R8, #0			//If ALL WORDS CHECKED DONE11
+  a8:	e3580000 	cmp	r8, #0
+			BEQ			DONE11	
+  ac:	0a00000d 	beq	e8 <DONE11>
+
+000000b0 <SCH>:
+SCH: 		CMP 		R1, #0 			// loop until the data contains no more 1’s 
+  b0:	e3510000 	cmp	r1, #0
+			BEQ 		DONE1 
+  b4:	0a000003 	beq	c8 <DONE1>
+			LSR 		R2, R1, #1 		// perform SHIFT, followed by AND 
+  b8:	e1a020a1 	lsr	r2, r1, #1
+			AND 		R1, R1, R2 
+  bc:	e0011002 	and	r1, r1, r2
+			ADD		 	R0, #1 			// count the string lengths so far 
+  c0:	e2800001 	add	r0, r0, #1
+			B 			SCH
+  c4:	eafffff9 	b	b0 <SCH>
+
+000000c8 <DONE1>:
+DONE1:		ADD			R3, R3, #4		//NEXT NUM
+  c8:	e2833004 	add	r3, r3, #4
+			LDR			R4, [R3]
+  cc:	e5934000 	ldr	r4, [r3]
+			MOV			R1, R4
+  d0:	e1a01004 	mov	r1, r4
+			SUBS		R8, R8, #1		//DECREMENT COUNTER
+  d4:	e2588001 	subs	r8, r8, #1
+			CMP			R0, R5			//COMPARE LARGEST NUMS
+  d8:	e1500005 	cmp	r0, r5
+			BLE			LOOP
+  dc:	dafffff0 	ble	a4 <LOOP>
+			MOV			R5, R0			//UPDATE LARGEST STRING OF 1S
+  e0:	e1a05000 	mov	r5, r0
+			B			LOOP
+  e4:	eaffffee 	b	a4 <LOOP>
+
+000000e8 <DONE11>:
+DONE11:		BX			LR
+  e8:	e12fff1e 	bx	lr
+
+000000ec <ZEROES>:
+
+ZEROES:		LDR 		R1, TEST_NUM 	// load the data word into R1
+  ec:	e59f10f0 	ldr	r1, [pc, #240]	; 1e4 <TEST_NUM>
+			NEG			R1,	R1				//Turn 0s to 1s
+  f0:	e2611000 	rsb	r1, r1, #0
+			SUB			R1,	#1				//ADJUST CONVERSION
+  f4:	e2411001 	sub	r1, r1, #1
+			LDR			R3, =TEST_NUM
+  f8:	e59f3124 	ldr	r3, [pc, #292]	; 224 <BIT_CODES+0x14>
+			LDR			R0, =N				
+  fc:	e59f0124 	ldr	r0, [pc, #292]	; 228 <BIT_CODES+0x18>
+			MOV			R8, #0
+ 100:	e3a08000 	mov	r8, #0
+			LDR			R8,[R0]
+ 104:	e5908000 	ldr	r8, [r0]
+
+00000108 <LOOP2>:
+LOOP2:		MOV 		R0, #0 			// R0 will hold the result 
+ 108:	e3a00000 	mov	r0, #0
+			CMP			R8, #0			
+ 10c:	e3580000 	cmp	r8, #0
+			BEQ			DONE22	
+ 110:	0a00000e 	beq	150 <DONE22>
+
+00000114 <SCH2>:
+SCH2: 		CMP 		R1, #0 			// loop until the data contains no more 1’s 
+ 114:	e3510000 	cmp	r1, #0
+			BEQ 		DONE2 
+ 118:	0a000003 	beq	12c <DONE2>
+			LSR 		R2, R1, #1 		// perform SHIFT, followed by AND 
+ 11c:	e1a020a1 	lsr	r2, r1, #1
+			AND 		R1, R1, R2 
+ 120:	e0011002 	and	r1, r1, r2
+			ADD		 	R0, #1 			// count the string lengths so far 
+ 124:	e2800001 	add	r0, r0, #1
+			B 			SCH2
+ 128:	eafffff9 	b	114 <SCH2>
+
+0000012c <DONE2>:
+DONE2:		ADD			R3, R3, #4
+ 12c:	e2833004 	add	r3, r3, #4
+			LDR			R4, [R3]
+ 130:	e5934000 	ldr	r4, [r3]
+			NEG			R1, R4
+ 134:	e2641000 	rsb	r1, r4, #0
+			SUB			R1,	#1
+ 138:	e2411001 	sub	r1, r1, #1
+			SUBS		R8, R8, #1
+ 13c:	e2588001 	subs	r8, r8, #1
+			CMP			R0, R6
+ 140:	e1500006 	cmp	r0, r6
+			BLE			LOOP2
+ 144:	daffffef 	ble	108 <LOOP2>
+			MOV			R6, R0			//UPDATE LARGEST STRING OF 0S
+ 148:	e1a06000 	mov	r6, r0
+			B			LOOP2
+ 14c:	eaffffed 	b	108 <LOOP2>
+
+00000150 <DONE22>:
+DONE22:		BX			LR
+ 150:	e12fff1e 	bx	lr
+
+00000154 <ALTER>:
+
+ALTER:		LDR 		R1, TEST_NUM 	// load the data word into R1
+ 154:	e59f1088 	ldr	r1, [pc, #136]	; 1e4 <TEST_NUM>
+			LDR			R3, =TEST_NUM	
+ 158:	e59f30c4 	ldr	r3, [pc, #196]	; 224 <BIT_CODES+0x14>
+			LDR			R0, =N
+ 15c:	e59f00c4 	ldr	r0, [pc, #196]	; 228 <BIT_CODES+0x18>
+			MOV			R8, #0
+ 160:	e3a08000 	mov	r8, #0
+			LDR			R8,[R0]
+ 164:	e5908000 	ldr	r8, [r0]
+
+00000168 <LOOP3>:
+LOOP3:		MOV 		R0, #0 			// R0 will hold the result 
+ 168:	e3a00000 	mov	r0, #0
+			CMP			R8, #0			
+ 16c:	e3580000 	cmp	r8, #0
+			BEQ			DONE33	
+ 170:	0a00000f 	beq	1b4 <DONE33>
+
+00000174 <SCH3>:
+SCH3: 		LSR 		R2, R1, #1 		// perform SHIFT, followed by XOR 
+ 174:	e1a020a1 	lsr	r2, r1, #1
+			EOR 		R1, R1, R2		//XOR CREATES 1S, SO THEN YOU JUST HAVE TO COUNT CONSECUTIVE 1S
+ 178:	e0211002 	eor	r1, r1, r2
+
+0000017c <LS3>:
+LS3:		CMP 		R1, #0 			// loop until the data contains no more 1’s 
+ 17c:	e3510000 	cmp	r1, #0
+			BEQ 		DONE3 
+ 180:	0a000003 	beq	194 <DONE3>
+			LSR 		R2, R1, #1 		// perform SHIFT, followed by AND 
+ 184:	e1a020a1 	lsr	r2, r1, #1
+			AND 		R1, R1, R2 		
+ 188:	e0011002 	and	r1, r1, r2
+			ADD		 	R0, #1 			// count the string lengths so far 
+ 18c:	e2800001 	add	r0, r0, #1
+			B 			LS3
+ 190:	eafffff9 	b	17c <LS3>
+
+00000194 <DONE3>:
+DONE3:		ADD			R3, R3, #4
+ 194:	e2833004 	add	r3, r3, #4
+			LDR			R4, [R3]
+ 198:	e5934000 	ldr	r4, [r3]
+			MOV			R1, R4
+ 19c:	e1a01004 	mov	r1, r4
+			SUBS		R8, R8, #1
+ 1a0:	e2588001 	subs	r8, r8, #1
+			CMP			R0, R7
+ 1a4:	e1500007 	cmp	r0, r7
+			BLE			LOOP3
+ 1a8:	daffffee 	ble	168 <LOOP3>
+			MOV			R7, R0			//UPDATE LARGEST STRING OF ALTERNATES
+ 1ac:	e1a07000 	mov	r7, r0
+			B			LOOP3
+ 1b0:	eaffffec 	b	168 <LOOP3>
+
+000001b4 <DONE33>:
+DONE33:		BX			LR
+ 1b4:	e12fff1e 	bx	lr
+
+000001b8 <SEG7_CODE>:
+
+/* Subroutine to convert the digits from 0 to 9 to be shown on a HEX display. 
+* Parameters: R0 = the decimal value of the digit to be displayed 
+* Returns: R0 = bit patterm to be written to the HEX display */ 
+SEG7_CODE: 	LDR 		R1, =BIT_CODES 
+ 1b8:	e59f106c 	ldr	r1, [pc, #108]	; 22c <BIT_CODES+0x1c>
+			LDRB 		R0, [R1, R0] 
+ 1bc:	e7d10000 	ldrb	r0, [r1, r0]
+			BX 			LR
+ 1c0:	e12fff1e 	bx	lr
+
+000001c4 <DIVIDE>:
+
+DIVIDE: 	MOV 		R2, #0 			//TO GET 10S AND 1S
+ 1c4:	e3a02000 	mov	r2, #0
+
+000001c8 <CONT>:
+CONT: 		CMP 		R0, #10 
+ 1c8:	e350000a 	cmp	r0, #10
+			BLT 		DIV_END 
+ 1cc:	ba000002 	blt	1dc <DIV_END>
+			SUB 		R0, #10 
+ 1d0:	e240000a 	sub	r0, r0, #10
+			ADD 		R2, #1 
+ 1d4:	e2822001 	add	r2, r2, #1
+			B 			CONT 
+ 1d8:	eafffffa 	b	1c8 <CONT>
+
+000001dc <DIV_END>:
+DIV_END: 	MOV 		R1, R2 			// return quotient in R1 (remainder is in R0) 
+ 1dc:	e1a01002 	mov	r1, r2
+			BX 			LR
+ 1e0:	e12fff1e 	bx	lr
+
+000001e4 <TEST_NUM>:
+ 1e4:	103fe00f 	.word	0x103fe00f
+ 1e8:	aaaaaaa0 	.word	0xaaaaaaa0
+ 1ec:	00ffff00 	.word	0x00ffff00
+ 1f0:	abcdeffe 	.word	0xabcdeffe
+ 1f4:	10203040 	.word	0x10203040
+ 1f8:	12345678 	.word	0x12345678
+ 1fc:	9abcdef0 	.word	0x9abcdef0
+ 200:	00000001 	.word	0x00000001
+ 204:	fedcba12 	.word	0xfedcba12
+ 208:	0000000a 	.word	0x0000000a
+
+0000020c <N>:
+ 20c:	0000000a 	.word	0x0000000a
+
+00000210 <BIT_CODES>:
+ 210:	4f5b063f 	.word	0x4f5b063f
+ 214:	077d6d66 	.word	0x077d6d66
+ 218:	0000677f 	.word	0x0000677f
+ 21c:	ff200020 	.word	0xff200020
+ 220:	ff200030 	.word	0xff200030
+ 224:	000001e4 	.word	0x000001e4
+ 228:	0000020c 	.word	0x0000020c
+ 22c:	00000210 	.word	0x00000210

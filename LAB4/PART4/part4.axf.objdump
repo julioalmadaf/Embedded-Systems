@@ -1,0 +1,221 @@
+
+C:/EMBEDDED/LAB4/PART4/part4.axf:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <__cs3_interrupt_vector>:
+/* Program that counts consecutive 1’s */ 
+.text 
+.global 	_start 
+_start: 
+			
+			LDR			R10, =0xFFFEC600	//base address A9 PRIVATE TIMER
+   0:	e59fa138 	ldr	r10, [pc, #312]	; 140 <BIT_CODES+0xc>
+			LDR 		R8, =0xFF200020 	// base address of HEX3-HEX0
+   4:	e59f8138 	ldr	r8, [pc, #312]	; 144 <BIT_CODES+0x10>
+			LDR 		R9, =0xFF200050		//base address buttons
+   8:	e59f9138 	ldr	r9, [pc, #312]	; 148 <BIT_CODES+0x14>
+			
+			LDR 		R7, =2000000 		// Load Value
+   c:	e59f7138 	ldr	r7, [pc, #312]	; 14c <BIT_CODES+0x18>
+			STR			R7, [R10]
+  10:	e58a7000 	str	r7, [r10]
+			LDR			R10, =0xFFFEC608	//CONTROL REGISTER
+  14:	e59fa134 	ldr	r10, [pc, #308]	; 150 <BIT_CODES+0x1c>
+			MOV			R7, #3				//AE bits set to 1, Enabled and A to reload value of load Value
+  18:	e3a07003 	mov	r7, #3
+			STR			R7,[R10]
+  1c:	e58a7000 	str	r7, [r10]
+			LDR			R10, =0xFFFEC60C	//Interrupt status
+  20:	e59fa12c 	ldr	r10, [pc, #300]	; 154 <BIT_CODES+0x20>
+			
+			MOV			R5,#0
+  24:	e3a05000 	mov	r5, #0
+
+00000028 <LOOP>:
+			
+LOOP:		MOV 		R0, R5 				// display R5 on HEX1-0 
+  28:	e1a00005 	mov	r0, r5
+			BL 			DIVIDE 				// ones digit will be in R0; tens digit in R1 		
+  2c:	eb00002a 	bl	dc <DIVIDE>
+			MOV 		R12, R1 			// save the tens digit 
+  30:	e1a0c001 	mov	r12, r1
+			BL 			SEG7_CODE 
+  34:	eb000025 	bl	d0 <SEG7_CODE>
+			MOV 		R4, R0 				// save bit code 
+  38:	e1a04000 	mov	r4, r0
+			MOV 		R0, R12 			// retrieve the tens digit, get bit code 
+  3c:	e1a0000c 	mov	r0, r12
+			BL 			SEG7_CODE 
+  40:	eb000022 	bl	d0 <SEG7_CODE>
+			ORR 		R4, R4, R0, LSL #8	//PRINT ON 2 7 SEG
+  44:	e1844400 	orr	r4, r4, r0, lsl #8
+			MOV			R0,R2
+  48:	e1a00002 	mov	r0, r2
+			BL			SEG7_CODE
+  4c:	eb00001f 	bl	d0 <SEG7_CODE>
+			ORR 		R4, R4, R0, LSL #16	//PRINT ON 2 7 SEG
+  50:	e1844800 	orr	r4, r4, r0, lsl #16
+			MOV			R0,R3
+  54:	e1a00003 	mov	r0, r3
+			BL			SEG7_CODE			
+  58:	eb00001c 	bl	d0 <SEG7_CODE>
+			ORR 		R4, R4, R0, LSL #24	//PRINT ON 2 7 SEG
+  5c:	e1844c00 	orr	r4, r4, r0, lsl #24
+			STR			R4,[R8]	
+  60:	e5884000 	str	r4, [r8]
+			LDR			R6,[R9]
+  64:	e5996000 	ldr	r6, [r9]
+			CMP			R6,#0
+  68:	e3560000 	cmp	r6, #0
+			BNE			WAIT
+  6c:	1a000006 	bne	8c <WAIT>
+			LDR			R7, [R10]
+  70:	e59a7000 	ldr	r7, [r10]
+			CMP			R7, #0
+  74:	e3570000 	cmp	r7, #0
+			BEQ			LOOP
+  78:	0affffea 	beq	28 <LOOP>
+			MOV			R7, #1
+  7c:	e3a07001 	mov	r7, #1
+			STR			R7,[R10]
+  80:	e58a7000 	str	r7, [r10]
+			BL			PLUS				//ADDS 1 EVERY .01 SECONDS
+  84:	eb00000c 	bl	bc <PLUS>
+			B			LOOP	
+  88:	eaffffe6 	b	28 <LOOP>
+
+0000008c <WAIT>:
+
+WAIT:		LDR			R6,[R9]				//SUBROUTINE FOR BUTTON RELEASE
+  8c:	e5996000 	ldr	r6, [r9]
+			CMP			R6,#0
+  90:	e3560000 	cmp	r6, #0
+			BNE			WAIT
+  94:	1afffffc 	bne	8c <WAIT>
+
+00000098 <WAIT2>:
+WAIT2:		LDR			R6,[R9]			//SUBROUTINE FOR BUTTON RELEASE
+  98:	e5996000 	ldr	r6, [r9]
+			CMP			R6,#0
+  9c:	e3560000 	cmp	r6, #0
+			BEQ			WAIT2
+  a0:	0afffffc 	beq	98 <WAIT2>
+
+000000a4 <DO_DELAY>:
+DO_DELAY: 	LDR 		R7, =200000000 	// delay counter 
+  a4:	e59f70ac 	ldr	r7, [pc, #172]	; 158 <BIT_CODES+0x24>
+
+000000a8 <SUB_LOOP>:
+SUB_LOOP: 	SUBS 		R7, R7, #1 
+  a8:	e2577001 	subs	r7, r7, #1
+			BNE 		SUB_LOOP
+  ac:	1afffffd 	bne	a8 <SUB_LOOP>
+			B			LOOP	
+  b0:	eaffffdc 	b	28 <LOOP>
+
+000000b4 <ZERO>:
+
+ZERO:		MOV			R5,#0			//resets value to 0
+  b4:	e3a05000 	mov	r5, #0
+			BX			LR
+  b8:	e12fff1e 	bx	lr
+
+000000bc <PLUS>:
+
+PLUS:		ADD			R5,R5,#1		//COUNTER UNTIL 99
+  bc:	e2855001 	add	r5, r5, #1
+			LDR			R7, =6000
+  c0:	e59f7094 	ldr	r7, [pc, #148]	; 15c <BIT_CODES+0x28>
+			CMP			R5, R7
+  c4:	e1550007 	cmp	r5, r7
+			BEQ			ZERO
+  c8:	0afffff9 	beq	b4 <ZERO>
+			BX			LR
+  cc:	e12fff1e 	bx	lr
+
+000000d0 <SEG7_CODE>:
+			
+/* Subroutine to convert the digits from 0 to 9 to be shown on a HEX display. 
+* Parameters: R0 = the decimal value of the digit to be displayed 
+* Returns: R0 = bit patterm to be written to the HEX display */ 
+SEG7_CODE: 	LDR 		R1, =BIT_CODES 
+  d0:	e59f1088 	ldr	r1, [pc, #136]	; 160 <BIT_CODES+0x2c>
+			LDRB 		R0, [R1, R0] 
+  d4:	e7d10000 	ldrb	r0, [r1, r0]
+			BX 			LR
+  d8:	e12fff1e 	bx	lr
+
+000000dc <DIVIDE>:
+			
+DIVIDE: 	MOV 		R4, #0 
+  dc:	e3a04000 	mov	r4, #0
+
+000000e0 <CONT2>:
+CONT2: 		CMP 		R0, #1000 		//GETS YOU 1000S
+  e0:	e3500ffa 	cmp	r0, #1000	; 0x3e8
+			BLT 		DIV_END2 
+  e4:	ba000002 	blt	f4 <DIV_END2>
+			SUB 		R0, #1000 
+  e8:	e2400ffa 	sub	r0, r0, #1000	; 0x3e8
+			ADD 		R4, #1 
+  ec:	e2844001 	add	r4, r4, #1
+			B 			CONT2 
+  f0:	eafffffa 	b	e0 <CONT2>
+
+000000f4 <DIV_END2>:
+DIV_END2: 	MOV 		R3, R4 			 
+  f4:	e1a03004 	mov	r3, r4
+			MOV			R4, #0
+  f8:	e3a04000 	mov	r4, #0
+
+000000fc <CONT1>:
+CONT1:		CMP			R0, #100		//GETS YOU 100S
+  fc:	e3500064 	cmp	r0, #100	; 0x64
+			BLT			DIV_END1
+ 100:	ba000002 	blt	110 <DIV_END1>
+			SUB			R0, #100
+ 104:	e2400064 	sub	r0, r0, #100	; 0x64
+			ADD			R4, #1
+ 108:	e2844001 	add	r4, r4, #1
+			B			CONT1
+ 10c:	eafffffa 	b	fc <CONT1>
+
+00000110 <DIV_END1>:
+DIV_END1: 	MOV 		R2, R4 			
+ 110:	e1a02004 	mov	r2, r4
+			MOV			R4, #0
+ 114:	e3a04000 	mov	r4, #0
+
+00000118 <CONT>:
+CONT:		CMP			R0, #10			//GETS YOU 10S
+ 118:	e350000a 	cmp	r0, #10
+			BLT			DIV_END
+ 11c:	ba000002 	blt	12c <DIV_END>
+			SUB			R0, #10
+ 120:	e240000a 	sub	r0, r0, #10
+			ADD			R4, #1
+ 124:	e2844001 	add	r4, r4, #1
+			B			CONT	
+ 128:	eafffffa 	b	118 <CONT>
+
+0000012c <DIV_END>:
+DIV_END:	MOV			R1, R4			
+ 12c:	e1a01004 	mov	r1, r4
+			BX 			LR				//EXITS SUBROUTINE
+ 130:	e12fff1e 	bx	lr
+
+00000134 <BIT_CODES>:
+ 134:	4f5b063f 	.word	0x4f5b063f
+ 138:	077d6d66 	.word	0x077d6d66
+ 13c:	0000677f 	.word	0x0000677f
+ 140:	fffec600 	.word	0xfffec600
+ 144:	ff200020 	.word	0xff200020
+ 148:	ff200050 	.word	0xff200050
+ 14c:	001e8480 	.word	0x001e8480
+ 150:	fffec608 	.word	0xfffec608
+ 154:	fffec60c 	.word	0xfffec60c
+ 158:	0bebc200 	.word	0x0bebc200
+ 15c:	00001770 	.word	0x00001770
+ 160:	00000134 	.word	0x00000134

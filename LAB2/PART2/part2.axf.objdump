@@ -1,0 +1,81 @@
+
+C:/EMBEDDED/LAB2/PART2/part2.axf:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <__cs3_interrupt_vector>:
+/* Program that counts consecutive 1’s */ 
+			.text 
+			.global 	_start 
+_start: 
+			LDR 		R1, TEST_NUM 	// load the data word into R1
+   0:	e59f1054 	ldr	r1, [pc, #84]	; 5c <TEST_NUM>
+
+			MOV			R5, #0			//Initialize R5 with a 0, it is the one that is going to hold the largest string of 1s among all the TEST_NUM
+   4:	e3a05000 	mov	r5, #0
+			LDR			R3, =TEST_NUM	//holds test_num location
+   8:	e59f3074 	ldr	r3, [pc, #116]	; 84 <TEST_NUM+0x28>
+
+0000000c <LOOP>:
+LOOP:		MOV 		R0, #0 			// R0 will hold the result 
+   c:	e3a00000 	mov	r0, #0
+			MOV			R4,R3			//copy direction to r4
+  10:	e1a04003 	mov	r4, r3
+			CMP			R1, #0			//If R1 holds 0, end
+  14:	e3510000 	cmp	r1, #0
+			BEQ			END				
+  18:	0a000007 	beq	3c <END>
+			BL			ONES			
+  1c:	eb000007 	bl	40 <ONES>
+			ADD			R3, R3, #4		//obtain the next VALUE
+  20:	e2833004 	add	r3, r3, #4
+			LDR			R4, [R3]		//load the new value to R4
+  24:	e5934000 	ldr	r4, [r3]
+			MOV			R1, R4			//COPY IT TO R1
+  28:	e1a01004 	mov	r1, r4
+			CMP			R0, R5			//CHECK WHICH HAS LARGEST STRINGS OF 1S
+  2c:	e1500005 	cmp	r0, r5
+			BLE			LOOP
+  30:	dafffff5 	ble	c <LOOP>
+			MOV			R5, R0			//UPDATE LARGEST STRING OF 1S
+  34:	e1a05000 	mov	r5, r0
+			B			LOOP
+  38:	eafffff3 	b	c <LOOP>
+
+0000003c <END>:
+			
+END: 		B 			END		
+  3c:	eafffffe 	b	3c <END>
+
+00000040 <ONES>:
+			
+ONES: 		CMP 		R1, #0 			// loop until the data contains no more 1’s 
+  40:	e3510000 	cmp	r1, #0
+			BEQ 		DONE 
+  44:	0a000003 	beq	58 <DONE>
+			LSR 		R2, R1, #1 		// perform SHIFT, followed by AND 
+  48:	e1a020a1 	lsr	r2, r1, #1
+			AND 		R1, R1, R2 
+  4c:	e0011002 	and	r1, r1, r2
+			ADD		 	R0, #1 			// count the string lengths so far 
+  50:	e2800001 	add	r0, r0, #1
+			B 			ONES
+  54:	eafffff9 	b	40 <ONES>
+
+00000058 <DONE>:
+DONE:		BX			LR
+  58:	e12fff1e 	bx	lr
+
+0000005c <TEST_NUM>:
+  5c:	103fe00f 	.word	0x103fe00f
+  60:	11111111 	.word	0x11111111
+  64:	ffffffff 	.word	0xffffffff
+  68:	abcdeffe 	.word	0xabcdeffe
+  6c:	10203040 	.word	0x10203040
+  70:	12345678 	.word	0x12345678
+  74:	9abcdef0 	.word	0x9abcdef0
+  78:	00000001 	.word	0x00000001
+  7c:	fedcba12 	.word	0xfedcba12
+  80:	00000000 	.word	0x00000000
+  84:	0000005c 	.word	0x0000005c

@@ -1,0 +1,135 @@
+
+C:/EMBEDDED/LAB4/PART1/part1.axf:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <__cs3_interrupt_vector>:
+.text 
+.global 	_start 
+_start: 
+			
+
+			LDR			R3, =0xFF200050	//base address Pushbuttons
+   0:	e59f30b8 	ldr	r3, [pc, #184]	; c0 <BIT_CODES+0xc>
+			LDR 		R8, =0xFF200020 // base address of HEX3-HEX0 
+   4:	e59f80b8 	ldr	r8, [pc, #184]	; c4 <BIT_CODES+0x10>
+			MOV			R5,#0
+   8:	e3a05000 	mov	r5, #0
+
+0000000c <LOOP>:
+LOOP:		MOV			R0, R5
+   c:	e1a00005 	mov	r0, r5
+			BL			SEG7_CODE
+  10:	eb000020 	bl	98 <SEG7_CODE>
+			MOV			R4,R0
+  14:	e1a04000 	mov	r4, r0
+			STR			R4,[R8]			//PRINT IN 7 SEG
+  18:	e5884000 	str	r4, [r8]
+			LDR			R6,[R3]
+  1c:	e5936000 	ldr	r6, [r3]
+			CMP			R6, #1			//CHECK WISH BUTTON WAS PRESSED
+  20:	e3560001 	cmp	r6, #1
+			BEQ			ZERO
+  24:	0a000006 	beq	44 <ZERO>
+			CMP			R6, #2
+  28:	e3560002 	cmp	r6, #2
+			BEQ			PLUS
+  2c:	0a000007 	beq	50 <PLUS>
+			CMP			R6, #4
+  30:	e3560004 	cmp	r6, #4
+			BEQ			LESS
+  34:	0a00000a 	beq	64 <LESS>
+			CMP			R6, #8
+  38:	e3560008 	cmp	r6, #8
+			BEQ			NADA
+  3c:	0a00000d 	beq	78 <NADA>
+			B			LOOP			//ALWAYS CHECK BUTTONS
+  40:	eafffff1 	b	c <LOOP>
+
+00000044 <ZERO>:
+
+ZERO:		MOV			R5,#0			//SET 7 SEG TO 0
+  44:	e3a05000 	mov	r5, #0
+			BL			WAIT
+  48:	eb000015 	bl	a4 <WAIT>
+			B 			LOOP
+  4c:	eaffffee 	b	c <LOOP>
+
+00000050 <PLUS>:
+
+PLUS:		ADD			R5,R5,#1		//ADD 1 TO COUNTER
+  50:	e2855001 	add	r5, r5, #1
+			CMP			R5,#10
+  54:	e355000a 	cmp	r5, #10
+			BEQ			ZERO	
+  58:	0afffff9 	beq	44 <ZERO>
+			BL			WAIT
+  5c:	eb000010 	bl	a4 <WAIT>
+			B			LOOP
+  60:	eaffffe9 	b	c <LOOP>
+
+00000064 <LESS>:
+			
+LESS:		SUBS 		R5,R5,#1		//SUBS 1 TO COUNTER
+  64:	e2555001 	subs	r5, r5, #1
+			CMP			R5,#0
+  68:	e3550000 	cmp	r5, #0
+			BLE			ZERO			//IF -1 LEAVE AT 0
+  6c:	dafffff4 	ble	44 <ZERO>
+			BL			WAIT
+  70:	eb00000b 	bl	a4 <WAIT>
+			B 			LOOP
+  74:	eaffffe4 	b	c <LOOP>
+
+00000078 <NADA>:
+
+NADA:		BL			WAIT			//BLANK AND WAIT FOR BUTTON PRESS
+  78:	eb000009 	bl	a4 <WAIT>
+			MOV			R0,#0
+  7c:	e3a00000 	mov	r0, #0
+			MOV			R4, R0
+  80:	e1a04000 	mov	r4, r0
+			STR			R4,[R8]			//BLANK 7 SEG
+  84:	e5884000 	str	r4, [r8]
+
+00000088 <WAITNADA>:
+WAITNADA:	LDR			R6,[R3]			
+  88:	e5936000 	ldr	r6, [r3]
+			CMP			R6,#0
+  8c:	e3560000 	cmp	r6, #0
+			BEQ			WAITNADA		//WAIT FOR BUTTON PRESS
+  90:	0afffffc 	beq	88 <WAITNADA>
+			B			ZERO			//SET TO ZERO WHEN BUTTON PRESS
+  94:	eaffffea 	b	44 <ZERO>
+
+00000098 <SEG7_CODE>:
+
+/* Subroutine to convert the digits from 0 to 9 to be shown on a HEX display. 
+* Parameters: R0 = the decimal value of the digit to be displayed 
+* Returns: R0 = bit patterm to be written to the HEX display */ 
+SEG7_CODE: 	LDR 		R1, =BIT_CODES 
+  98:	e59f1028 	ldr	r1, [pc, #40]	; c8 <BIT_CODES+0x14>
+			LDRB 		R0, [R1, R0] 
+  9c:	e7d10000 	ldrb	r0, [r1, r0]
+			BX 			LR
+  a0:	e12fff1e 	bx	lr
+
+000000a4 <WAIT>:
+
+WAIT:		LDR			R6,[R3]			//SUBROUTINE FOR BUTTON RELEASE
+  a4:	e5936000 	ldr	r6, [r3]
+			CMP			R6,#0
+  a8:	e3560000 	cmp	r6, #0
+			BNE			WAIT
+  ac:	1afffffc 	bne	a4 <WAIT>
+			BX			LR
+  b0:	e12fff1e 	bx	lr
+
+000000b4 <BIT_CODES>:
+  b4:	4f5b063f 	.word	0x4f5b063f
+  b8:	077d6d66 	.word	0x077d6d66
+  bc:	0000677f 	.word	0x0000677f
+  c0:	ff200050 	.word	0xff200050
+  c4:	ff200020 	.word	0xff200020
+  c8:	000000b4 	.word	0x000000b4

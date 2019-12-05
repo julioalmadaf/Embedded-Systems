@@ -1,0 +1,230 @@
+
+C:/EMBEDDED/LAB2/PART3/part3.axf:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <__cs3_interrupt_vector>:
+			.text 
+			.global 	_start 
+_start: 
+			
+
+			MOV			R5, #0			//initialize registers
+   0:	e3a05000 	mov	r5, #0
+			MOV			R6, #0			
+   4:	e3a06000 	mov	r6, #0
+			MOV			R7, #0
+   8:	e3a07000 	mov	r7, #0
+			BL			ONES
+   c:	eb000002 	bl	1c <ONES>
+			BL			ZEROES
+  10:	eb000018 	bl	78 <ZEROES>
+			BL			ALTER
+  14:	eb000031 	bl	e0 <ALTER>
+
+00000018 <END>:
+			
+END: 		B 			END		
+  18:	eafffffe 	b	18 <END>
+
+0000001c <ONES>:
+			
+
+ONES:		LDR 		R1, TEST_NUM 	// load the data word into R1
+  1c:	e59f1120 	ldr	r1, [pc, #288]	; 144 <TEST_NUM>
+			LDR			R3, =TEST_NUM	
+  20:	e59f3148 	ldr	r3, [pc, #328]	; 170 <N+0x4>
+			LDR			R0, =N
+  24:	e59f0148 	ldr	r0, [pc, #328]	; 174 <N+0x8>
+			MOV			R8, #0
+  28:	e3a08000 	mov	r8, #0
+			LDR			R8,[R0]
+  2c:	e5908000 	ldr	r8, [r0]
+
+00000030 <LOOP>:
+LOOP:		MOV 		R0, #0 			// R0 will hold the result 
+  30:	e3a00000 	mov	r0, #0
+			CMP			R8, #0			//If R1 holds 0, end
+  34:	e3580000 	cmp	r8, #0
+			BEQ			DONE11	
+  38:	0a00000d 	beq	74 <DONE11>
+
+0000003c <SCH>:
+SCH: 		CMP 		R1, #0 			// loop until the data contains no more 1’s 
+  3c:	e3510000 	cmp	r1, #0
+			BEQ 		DONE1 
+  40:	0a000003 	beq	54 <DONE1>
+			LSR 		R2, R1, #1 		// perform SHIFT, followed by AND 
+  44:	e1a020a1 	lsr	r2, r1, #1
+			AND 		R1, R1, R2 
+  48:	e0011002 	and	r1, r1, r2
+			ADD		 	R0, #1 			// count the string lengths so far 
+  4c:	e2800001 	add	r0, r0, #1
+			B 			SCH
+  50:	eafffff9 	b	3c <SCH>
+
+00000054 <DONE1>:
+DONE1:		ADD			R3, R3, #4
+  54:	e2833004 	add	r3, r3, #4
+			LDR			R4, [R3]
+  58:	e5934000 	ldr	r4, [r3]
+			MOV			R1, R4
+  5c:	e1a01004 	mov	r1, r4
+			SUBS		R8, R8, #1
+  60:	e2588001 	subs	r8, r8, #1
+			CMP			R0, R5
+  64:	e1500005 	cmp	r0, r5
+			BLE			LOOP
+  68:	dafffff0 	ble	30 <LOOP>
+			MOV			R5, R0			//UPDATE LARGEST STRING OF 1S
+  6c:	e1a05000 	mov	r5, r0
+			B			LOOP
+  70:	eaffffee 	b	30 <LOOP>
+
+00000074 <DONE11>:
+DONE11:		BX			LR
+  74:	e12fff1e 	bx	lr
+
+00000078 <ZEROES>:
+
+ZEROES:		LDR 		R1, TEST_NUM 	// load the data word into R1
+  78:	e59f10c4 	ldr	r1, [pc, #196]	; 144 <TEST_NUM>
+			NEG			R1,	R1				//Turn 0s to 1s
+  7c:	e2611000 	rsb	r1, r1, #0
+			SUB			R1,	#1
+  80:	e2411001 	sub	r1, r1, #1
+			LDR			R3, =TEST_NUM
+  84:	e59f30e4 	ldr	r3, [pc, #228]	; 170 <N+0x4>
+			LDR			R0, =N
+  88:	e59f00e4 	ldr	r0, [pc, #228]	; 174 <N+0x8>
+			MOV			R8, #0
+  8c:	e3a08000 	mov	r8, #0
+			LDR			R8,[R0]
+  90:	e5908000 	ldr	r8, [r0]
+
+00000094 <LOOP2>:
+LOOP2:		MOV 		R0, #0 			// R0 will hold the result 
+  94:	e3a00000 	mov	r0, #0
+			CMP			R8, #0			//If R1 holds 0, end
+  98:	e3580000 	cmp	r8, #0
+			BEQ			DONE22	
+  9c:	0a00000e 	beq	dc <DONE22>
+
+000000a0 <SCH2>:
+SCH2: 		CMP 		R1, #0 			// loop until the data contains no more 1’s 
+  a0:	e3510000 	cmp	r1, #0
+			BEQ 		DONE2 
+  a4:	0a000003 	beq	b8 <DONE2>
+			LSR 		R2, R1, #1 		// perform SHIFT, followed by AND 
+  a8:	e1a020a1 	lsr	r2, r1, #1
+			AND 		R1, R1, R2 
+  ac:	e0011002 	and	r1, r1, r2
+			ADD		 	R0, #1 			// count the string lengths so far 
+  b0:	e2800001 	add	r0, r0, #1
+			B 			SCH2
+  b4:	eafffff9 	b	a0 <SCH2>
+
+000000b8 <DONE2>:
+DONE2:		ADD			R3, R3, #4
+  b8:	e2833004 	add	r3, r3, #4
+			LDR			R4, [R3]
+  bc:	e5934000 	ldr	r4, [r3]
+			NEG			R1, R4
+  c0:	e2641000 	rsb	r1, r4, #0
+			SUB			R1,	#1
+  c4:	e2411001 	sub	r1, r1, #1
+			SUBS		R8, R8, #1
+  c8:	e2588001 	subs	r8, r8, #1
+			CMP			R0, R6
+  cc:	e1500006 	cmp	r0, r6
+			BLE			LOOP2
+  d0:	daffffef 	ble	94 <LOOP2>
+			MOV			R6, R0			//UPDATE LARGEST STRING OF 1S
+  d4:	e1a06000 	mov	r6, r0
+			B			LOOP2
+  d8:	eaffffed 	b	94 <LOOP2>
+
+000000dc <DONE22>:
+DONE22:		BX			LR
+  dc:	e12fff1e 	bx	lr
+
+000000e0 <ALTER>:
+
+ALTER:		LDR 		R1, TEST_NUM 	// load the data word into R1
+  e0:	e59f105c 	ldr	r1, [pc, #92]	; 144 <TEST_NUM>
+			LDR			R3, =TEST_NUM	
+  e4:	e59f3084 	ldr	r3, [pc, #132]	; 170 <N+0x4>
+			LDR			R0, =N
+  e8:	e59f0084 	ldr	r0, [pc, #132]	; 174 <N+0x8>
+			MOV			R8, #0
+  ec:	e3a08000 	mov	r8, #0
+			LDR			R8,[R0]
+  f0:	e5908000 	ldr	r8, [r0]
+
+000000f4 <LOOP3>:
+LOOP3:		MOV 		R0, #0 			// R0 will hold the result 
+  f4:	e3a00000 	mov	r0, #0
+			CMP			R8, #0			//If R1 holds 0, end
+  f8:	e3580000 	cmp	r8, #0
+			BEQ			DONE33	
+  fc:	0a00000f 	beq	140 <DONE33>
+
+00000100 <SCH3>:
+SCH3: 		LSR 		R2, R1, #1 		// perform SHIFT, followed by XOR 
+ 100:	e1a020a1 	lsr	r2, r1, #1
+			EOR 		R1, R1, R2
+ 104:	e0211002 	eor	r1, r1, r2
+
+00000108 <LS3>:
+LS3:		CMP 		R1, #0 			// loop until the data contains no more 1’s 
+ 108:	e3510000 	cmp	r1, #0
+			BEQ 		DONE3 
+ 10c:	0a000003 	beq	120 <DONE3>
+			LSR 		R2, R1, #1 		// perform SHIFT, followed by AND 
+ 110:	e1a020a1 	lsr	r2, r1, #1
+			AND 		R1, R1, R2 		
+ 114:	e0011002 	and	r1, r1, r2
+			ADD		 	R0, #1 			// count the string lengths so far 
+ 118:	e2800001 	add	r0, r0, #1
+			B 			LS3
+ 11c:	eafffff9 	b	108 <LS3>
+
+00000120 <DONE3>:
+DONE3:		ADD			R3, R3, #4
+ 120:	e2833004 	add	r3, r3, #4
+			LDR			R4, [R3]
+ 124:	e5934000 	ldr	r4, [r3]
+			MOV			R1, R4
+ 128:	e1a01004 	mov	r1, r4
+			SUBS		R8, R8, #1
+ 12c:	e2588001 	subs	r8, r8, #1
+			CMP			R0, R7
+ 130:	e1500007 	cmp	r0, r7
+			BLE			LOOP3
+ 134:	daffffee 	ble	f4 <LOOP3>
+			MOV			R7, R0			//UPDATE LARGEST STRING OF 1S
+ 138:	e1a07000 	mov	r7, r0
+			B			LOOP3
+ 13c:	eaffffec 	b	f4 <LOOP3>
+
+00000140 <DONE33>:
+DONE33:		BX			LR
+ 140:	e12fff1e 	bx	lr
+
+00000144 <TEST_NUM>:
+ 144:	103fe00f 	.word	0x103fe00f
+ 148:	aaaaaaaa 	.word	0xaaaaaaaa
+ 14c:	ffffffff 	.word	0xffffffff
+ 150:	abcdeffe 	.word	0xabcdeffe
+ 154:	10203040 	.word	0x10203040
+ 158:	12345678 	.word	0x12345678
+ 15c:	9abcdef0 	.word	0x9abcdef0
+ 160:	00000001 	.word	0x00000001
+ 164:	fedcba12 	.word	0xfedcba12
+ 168:	00000000 	.word	0x00000000
+
+0000016c <N>:
+ 16c:	0000000a 	.word	0x0000000a
+ 170:	00000144 	.word	0x00000144
+ 174:	0000016c 	.word	0x0000016c
