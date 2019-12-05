@@ -1,0 +1,82 @@
+void checKey7()
+{
+    if(byte1==0x0E) text7=concat(text7,"|");
+    else if(byte1==0x16) text7=concat(text7,"1");
+    else if(byte1==0x1E) text7=concat(text7,"2");
+    else if(byte1==0x26) text7=concat(text7,"3");
+    else if(byte1==0x25) text7=concat(text7,"4");
+    else if(byte1==0x2E) text7=concat(text7,"5");
+    else if(byte1==0x36) text7=concat(text7,"6");
+    else if(byte1==0x3D) text7=concat(text7,"7");
+    else if(byte1==0x3E) text7=concat(text7,"8");
+    else if(byte1==0x46) text7=concat(text7,"9");
+    else if(byte1==0x45) text7=concat(text7,"0");
+    else if(byte1==0x4E) text7=concat(text7,"'");
+    else if(byte1==0x55) text7=concat(text7,"¿");
+    else if(byte1==0x66) text7[strlen(text7)-1]=0; //Backspace
+    else if((byte1==0x15)&& (flagCaps==0)) text7=concat(text7,"q");
+    else if((byte1==0x1D)&& (flagCaps==0)) text7=concat(text7,"w");
+    else if((byte1==0x24)&& (flagCaps==0)) text7=concat(text7,"e");
+    else if((byte1==0x2D)&& (flagCaps==0)) text7=concat(text7,"r");
+    else if((byte1==0x2C)&& (flagCaps==0)) text7=concat(text7,"t");
+    else if((byte1==0x35)&& (flagCaps==0)) text7=concat(text7,"y");
+    else if((byte1==0x3C)&& (flagCaps==0)) text7=concat(text7,"u");
+    else if((byte1==0x43)&& (flagCaps==0)) text7=concat(text7,"i");
+    else if((byte1==0x44)&& (flagCaps==0)) text7=concat(text7,"o");
+    else if((byte1==0x4D)&& (flagCaps==0)) text7=concat(text7,"p");
+    else if((byte1==0x15)&& (flagCaps==1)) text7=concat(text7,"Q");
+    else if((byte1==0x1D)&& (flagCaps==1)) text7=concat(text7,"W");
+    else if((byte1==0x24)&& (flagCaps==1)) text7=concat(text7,"E");
+    else if((byte1==0x2D)&& (flagCaps==1)) text7=concat(text7,"R");
+    else if((byte1==0x2C)&& (flagCaps==1)) text7=concat(text7,"T");
+    else if((byte1==0x35)&& (flagCaps==1)) text7=concat(text7,"Y");
+    else if((byte1==0x3C)&& (flagCaps==1)) text7=concat(text7,"U");
+    else if((byte1==0x43)&& (flagCaps==1)) text7=concat(text7,"I");
+    else if((byte1==0x44)&& (flagCaps==1)) text7=concat(text7,"O");
+    else if((byte1==0x4D)&& (flagCaps==1)) text7=concat(text7,"P");
+    else if(byte1==0x54) text7=concat(text7,"´");
+    else if(byte1==0x5B) text7=concat(text7,"+");
+    else if((byte1==0x58)&&(byte2==0xF0)&&(byte3==0x58)) //MAYUS
+    { 
+        if(flagCaps==0)flagCaps=1;
+        else if(flagCaps==1)flagCaps=0;
+    }
+    else if((byte1==0x1C)&& (flagCaps==0)) text7=concat(text7,"a");
+    else if((byte1==0x1B)&& (flagCaps==0)) text7=concat(text7,"s");
+    else if((byte1==0x23)&& (flagCaps==0)) text7=concat(text7,"d");
+    else if((byte1==0x2B)&& (flagCaps==0)) text7=concat(text7,"f");
+    else if((byte1==0x34)&& (flagCaps==0)) text7=concat(text7,"g");
+    else if((byte1==0x33)&& (flagCaps==0)) text7=concat(text7,"h");
+    else if((byte1==0x3B)&& (flagCaps==0)) text7=concat(text7,"j");
+    else if((byte1==0x42)&& (flagCaps==0)) text7=concat(text7,"k");
+    else if((byte1==0x4B)&& (flagCaps==0)) text7=concat(text7,"l");
+    else if((byte1==0x1C)&& (flagCaps==1)) text7=concat(text7,"A");
+    else if((byte1==0x1B)&& (flagCaps==1)) text7=concat(text7,"S");
+    else if((byte1==0x23)&& (flagCaps==1)) text7=concat(text7,"D");
+    else if((byte1==0x2B)&& (flagCaps==1)) text7=concat(text7,"F");
+    else if((byte1==0x34)&& (flagCaps==1)) text7=concat(text7,"G");
+    else if((byte1==0x33)&& (flagCaps==1)) text7=concat(text7,"H");
+    else if((byte1==0x3B)&& (flagCaps==1)) text7=concat(text7,"J");
+    else if((byte1==0x42)&& (flagCaps==1)) text7=concat(text7,"K");
+    else if((byte1==0x4B)&& (flagCaps==1)) text7=concat(text7,"L");
+    else if((byte1==0x4C)&& (flagCaps==1)) text7=concat(text7,"Ñ");
+    else if(byte1==0x5A) flagEnter++; //ENTER 16 columnas 8 filas
+    else if((byte1==0x1A)&& (flagCaps==0))text7=concat(text7,"z");
+    else if((byte1==0x22)&& (flagCaps==0))text7=concat(text7,"x");
+    else if((byte1==0x21)&& (flagCaps==0))text7=concat(text7,"c");
+    else if((byte1==0x2A)&& (flagCaps==0))text7=concat(text7,"v");
+    else if((byte1==0x32)&& (flagCaps==0))text7=concat(text7,"b");
+    else if((byte1==0x31)&& (flagCaps==0))text7=concat(text7,"n");
+    else if((byte1==0x3A)&& (flagCaps==0))text7=concat(text7,"m");
+    else if((byte1==0x1A)&& (flagCaps==1)) text7=concat(text7,"Z");
+    else if((byte1==0x22)&& (flagCaps==1)) text7=concat(text7,"X");
+    else if((byte1==0x21)&& (flagCaps==1)) text7=concat(text7,"C");
+    else if((byte1==0x2A)&& (flagCaps==1)) text7=concat(text7,"V");
+    else if((byte1==0x32)&& (flagCaps==1)) text7=concat(text7,"B");
+    else if((byte1==0x31)&& (flagCaps==1)) text7=concat(text7,"N");
+    else if((byte1==0x3A)&& (flagCaps==1)) text7=concat(text7,"M");
+    else if(byte1==0x41) text7=concat(text7,",");
+    else if(byte1==0x49) text7=concat(text7,".");
+    else if(byte1==0x4A) text7=concat(text7,"-");
+    else if(byte1==0x29) text7=concat(text7," "); 
+}
