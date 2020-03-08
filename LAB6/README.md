@@ -24,7 +24,7 @@ SS are seconds, and DD are hundredths of a second. Measure time intervals of 0.0
 by using polled I/O with the A9 Private Timer. You should be able to stop/run the clock by pressing any
 pushbutton KEY. When the clock reaches 59:59:99, it should wrap around to 00:00:00.
 
-# **Part 4**
+# **Part 5**
 
 Write a C program that scrolls the message dE1-SoC in the right-to-left direction across the 7-segment
 displays HEX5 − 0.You
