@@ -1,4 +1,4 @@
-# **Lab **
+# **Lab 6**
 
 Read the lab6.pdf to get more details on each part of the project.
 
