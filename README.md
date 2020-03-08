@@ -9,7 +9,8 @@ Intel Quartus Prime.
 Intel FPGA Soc Embedded Design Suite.
 
 Languages Used:
--Assembly
+
+- Assembly
 - C
 
 Implementation of Linux.
