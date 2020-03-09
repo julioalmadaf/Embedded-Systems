@@ -4,5 +4,5 @@ Done in C code
 
 # **Challenge**
 
-Make a program on which each Key pressed is displayed on the
+Make a program on which each Key pressed is displayed on the 7- Segment display.
 
