@@ -1,7 +1,9 @@
 # **Embedded Systems**
 Exercises done during my Embedded Systems Course
 
-Multiple projects done with the DE10-Standard FPGA, Everything runs on the ARM Cortex-A9 processor.
+All projects done with the DE10-Standard FPGA, Everything runs on the ARM Cortex-A9 processor.
+
+Check each project for more information.
 
 Exercises done with:
 
